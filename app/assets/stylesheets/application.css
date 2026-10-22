@@ -1,10 +1,203 @@
 /*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
+ * Basic application styles (served by Propshaft, no preprocessing).
  */
+
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --border: #e2e5ec;
+  --primary: #3b5bdb;
+  --primary-hover: #2f49b5;
+  --danger: #c92a2a;
+  --danger-bg: #fff0f0;
+  --success: #2b8a3e;
+  --success-bg: #ebfbee;
+  --radius: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+h1 { margin: 0 0 1rem; font-size: 1.75rem; }
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Header */
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.brand { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+
+/* Page heading row */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.page-header h1 { margin: 0; }
+
+/* Flash messages */
+.flash {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+.flash-notice { background: var(--success-bg); border-color: #b2e2bd; color: var(--success); }
+.flash-alert  { background: var(--danger-bg);  border-color: #f3b7b7; color: var(--danger); }
+
+/* Buttons */
+.btn,
+button,
+input[type="submit"] {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover,
+button:hover,
+input[type="submit"]:hover { background: var(--primary-hover); text-decoration: none; }
+
+.btn-secondary { background: var(--surface); color: var(--primary); }
+.btn-secondary:hover { background: #eef1ff; }
+
+.btn-danger { background: var(--surface); border-color: var(--danger); color: var(--danger); }
+.btn-danger:hover { background: var(--danger); color: #fff; }
+
+.btn-small { padding: 0.25rem 0.65rem; font-size: 0.8rem; }
+
+/* Task list */
+.task-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.task-title { font-weight: 600; color: var(--text); }
+.task.is-completed .task-title { text-decoration: line-through; color: var(--muted); }
+.task-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; font-size: 0.85rem; color: var(--muted); }
+.task-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+.task-actions form { margin: 0; }
+
+.badge {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  background: var(--border);
+  font-size: 0.75rem;
+  color: var(--text);
+}
+.badge-done { background: var(--success-bg); color: var(--success); }
+
+.empty-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+/* Cards (show / form) */
+.card {
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Forms */
+.form-field { margin-bottom: 1rem; }
+.form-field label { display: block; margin-bottom: 0.25rem; font-weight: 600; font-size: 0.9rem; }
+.form-field-inline { display: flex; align-items: center; gap: 0.5rem; }
+.form-field-inline label { margin: 0; }
+
+input[type="text"],
+input[type="date"],
+textarea {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  outline: 2px solid rgba(59, 91, 219, 0.35);
+  border-color: var(--primary);
+}
+textarea { min-height: 7rem; resize: vertical; }
+
+.form-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem; }
+
+/* Validation errors (Rails wraps invalid fields in .field_with_errors) */
+.field_with_errors { display: contents; }
+.field_with_errors input,
+.field_with_errors textarea { border-color: var(--danger); background: var(--danger-bg); }
+.field_with_errors label { color: var(--danger); }
+
+.error-summary {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #f3b7b7;
+  border-radius: var(--radius);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.error-summary h2 { margin: 0 0 0.25rem; font-size: 1rem; }
+.error-summary ul { margin: 0; padding-left: 1.25rem; }
+
+/* Show page */
+.detail-list { margin: 0 0 1rem; }
+.detail-list dt { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.detail-list dd { margin: 0 0 0.75rem; }
+.detail-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.detail-actions form { margin: 0; }
+
+.back-link { display: inline-block; margin-top: 1rem; font-size: 0.9rem; }
+
+@media (max-width: 520px) {
+  .task { flex-direction: column; align-items: flex-start; }
+}

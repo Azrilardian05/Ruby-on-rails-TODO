@@ -1,11 +1,24 @@
+<% content_for :title, "#{@task.title} | Todo App" %>
+
 <h1><%= @task.title %></h1>
 
-<p><strong>Description:</strong> <%= @task.description %></p>
-<p><strong>Due date:</strong> <%= @task.due_date && l(@task.due_date) %></p>
-<p><strong>Completed:</strong> <%= @task.completed? ? "Yes" : "No" %></p>
+<div class="card">
+  <dl class="detail-list">
+    <dt>Description</dt>
+    <dd><%= @task.description.presence || "-" %></dd>
 
-<p>
-  <%= link_to "Edit", edit_task_path(@task) %> |
-  <%= link_to "Back to tasks", tasks_path %>
-</p>
-<%= button_to "Delete", @task, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+    <dt>Due date</dt>
+    <dd><%= @task.due_date ? l(@task.due_date) : "-" %></dd>
+
+    <dt>Status</dt>
+    <dd><%= @task.completed? ? "Completed" : "Pending" %></dd>
+  </dl>
+
+  <div class="detail-actions">
+    <%= link_to "Edit", edit_task_path(@task), class: "btn btn-secondary" %>
+    <%= button_to "Delete", @task, method: :delete, class: "btn btn-danger",
+          form: { data: { turbo_confirm: "Are you sure?" } } %>
+  </div>
+</div>
+
+<%= link_to "Back to tasks", tasks_path, class: "back-link" %>
