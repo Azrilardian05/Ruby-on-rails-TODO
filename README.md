@@ -73,14 +73,14 @@ Endpoint pengecekan kesehatan tersedia di `/up` (HTTP 200 jika aplikasi berjalan
 ```bash
 bin/rails test              # unit (model) dan controller test; tidak butuh browser
 bin/rails test:system       # system test end-to-end; butuh Chrome/Chromium
-bin/rails test:all          # keduanya
+bin/rails test:all          # keduanya (system test butuh Chrome/Chromium terpasang)
 ```
 
 Menjalankan satu file atau satu test:
 
 ```bash
 bin/rails test test/models/task_test.rb
-bin/rails test test/controllers/tasks_controller_test.rb:10
+bin/rails test test/controllers/tasks_controller_test.rb:8
 bin/rails test test/system/tasks_test.rb
 ```
 
