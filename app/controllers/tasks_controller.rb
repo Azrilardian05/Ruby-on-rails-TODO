@@ -2,7 +2,10 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[show edit update destroy toggle]
 
   def index
-    @tasks = Task.order(created_at: :desc, id: :desc)
+    @status = Task::STATUS_FILTERS.include?(params[:status]) ? params[:status] : Task::DEFAULT_STATUS
+    @sort = Task::SORT_FIELDS.include?(params[:sort]) ? params[:sort] : Task::DEFAULT_SORT
+    @direction = Task::SORT_DIRECTIONS.include?(params[:direction]) ? params[:direction] : Task::DEFAULT_DIRECTIONS[@sort]
+    @tasks = Task.with_status(@status).sorted_by(@sort, @direction)
   end
 
   def show

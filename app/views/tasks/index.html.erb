@@ -5,8 +5,32 @@
   <%= link_to "New task", new_task_path, class: "btn" %>
 </div>
 
+<div class="task-controls">
+  <nav class="filter-tabs" aria-label="Filter tasks">
+    <% { "all" => "All", "active" => "Active", "completed" => "Completed" }.each do |status, label| %>
+      <%= link_to label, tasks_path(status: status, sort: @sort, direction: @direction),
+            class: "filter-tab #{"is-current" if @status == status}",
+            aria: { current: (@status == status ? "page" : nil) } %>
+    <% end %>
+  </nav>
+
+  <%= form_with url: tasks_path, method: :get, class: "sort-form" do |f| %>
+    <%= hidden_field_tag :status, @status, id: nil %>
+    <%= f.label :sort, "Sort by" %>
+    <%= f.select :sort, [ [ "Date created", "created_at" ], [ "Due date", "due_date" ] ], { selected: @sort }, onchange: "this.form.requestSubmit()" %>
+    <%= f.select :direction, [ [ "Ascending", "asc" ], [ "Descending", "desc" ] ], { selected: @direction }, { "aria-label": "Direction", onchange: "this.form.requestSubmit()" } %>
+    <noscript><%= f.submit "Apply", class: "btn btn-secondary btn-small" %></noscript>
+  <% end %>
+</div>
+
 <% if @tasks.empty? %>
-  <p class="empty-state">No tasks yet. Create your first one!</p>
+  <p class="empty-state">
+    <% if @status == "all" %>
+      No tasks yet. Create your first one!
+    <% else %>
+      No <%= @status %> tasks.
+    <% end %>
+  </p>
 <% else %>
   <ul id="tasks" class="task-list">
     <% @tasks.each do |task| %>

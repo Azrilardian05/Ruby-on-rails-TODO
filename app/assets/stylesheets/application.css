@@ -221,3 +221,11 @@ textarea { min-height: 7rem; resize: vertical; }
 @media (max-width: 520px) {
   .task { flex-direction: column; align-items: flex-start; }
 }
+
+/* Filter & sort controls */
+.task-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.filter-tabs { display: flex; gap: 0.25rem; }
+.filter-tab { padding: 0.3rem 0.8rem; border: 1px solid var(--border, #d0d5dd); border-radius: 999px; font-size: 0.9rem; text-decoration: none; }
+.filter-tab.is-current { background: var(--primary); border-color: var(--primary); color: #fff; }
+.sort-form { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.sort-form select { width: auto; }

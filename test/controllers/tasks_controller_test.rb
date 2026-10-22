@@ -210,4 +210,82 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_select "##{ActionView::RecordIdentifier.dom_id(done)} button[aria-pressed='true']"
     assert_select "##{ActionView::RecordIdentifier.dom_id(@task)}.is-completed", false
   end
+
+  # --- filter & sort ---
+
+  def listed_titles
+    css_select("#tasks .task-title").map(&:text)
+  end
+
+  def seed_filter_tasks
+    Task.delete_all
+    Task.create!(title: "Alpha", due_date: Date.new(2026, 12, 1), created_at: 3.days.ago)
+    Task.create!(title: "Bravo", completed: true, due_date: Date.new(2026, 11, 1), created_at: 2.days.ago)
+    Task.create!(title: "Charlie", created_at: 1.day.ago)
+  end
+
+  test "index shows all tasks by default, newest first" do
+    seed_filter_tasks
+    get tasks_url
+    assert_equal %w[Charlie Bravo Alpha], listed_titles
+  end
+
+  test "index filters active tasks" do
+    seed_filter_tasks
+    get tasks_url, params: { status: "active" }
+    assert_equal %w[Charlie Alpha], listed_titles
+    assert_select "a.filter-tab.is-current", text: "Active"
+  end
+
+  test "index filters completed tasks" do
+    seed_filter_tasks
+    get tasks_url, params: { status: "completed" }
+    assert_equal %w[Bravo], listed_titles
+    assert_select "a.filter-tab.is-current", text: "Completed"
+  end
+
+  test "index status all shows everything" do
+    seed_filter_tasks
+    get tasks_url, params: { status: "all" }
+    assert_equal 3, listed_titles.size
+  end
+
+  test "index sorts by due date ascending by default with undated last" do
+    seed_filter_tasks
+    get tasks_url, params: { sort: "due_date" }
+    assert_equal %w[Bravo Alpha Charlie], listed_titles
+  end
+
+  test "index sorts by due date descending with undated last" do
+    seed_filter_tasks
+    get tasks_url, params: { sort: "due_date", direction: "desc" }
+    assert_equal %w[Alpha Bravo Charlie], listed_titles
+  end
+
+  test "index sorts by created date ascending" do
+    seed_filter_tasks
+    get tasks_url, params: { sort: "created_at", direction: "asc" }
+    assert_equal %w[Alpha Bravo Charlie], listed_titles
+  end
+
+  test "index combines filter and sort" do
+    seed_filter_tasks
+    get tasks_url, params: { status: "active", sort: "due_date" }
+    assert_equal %w[Alpha Charlie], listed_titles
+  end
+
+  test "index ignores invalid filter and sort params" do
+    seed_filter_tasks
+    get tasks_url, params: { status: "'; DROP TABLE tasks", sort: "title; --", direction: "sideways" }
+    assert_response :success
+    assert_equal %w[Charlie Bravo Alpha], listed_titles
+  end
+
+  test "index shows an empty state for an empty filter" do
+    Task.delete_all
+    Task.create!(title: "Only active")
+    get tasks_url, params: { status: "completed" }
+    assert_response :success
+    assert_select ".empty-state", text: /No completed tasks/
+  end
 end
