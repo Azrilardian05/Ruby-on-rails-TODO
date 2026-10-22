@@ -1,5 +1,9 @@
+<% content_for :title, "New task | Todo App" %>
+
 <h1>New task</h1>
 
-<%= render "form", task: @task %>
+<div class="card">
+  <%= render "form", task: @task %>
+</div>
 
-<p><%= link_to "Back to tasks", tasks_path %></p>
+<%= link_to "Back to tasks", tasks_path, class: "back-link" %>

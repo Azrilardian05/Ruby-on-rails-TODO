@@ -104,4 +104,46 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get task_url(id: 0)
     assert_response :not_found
   end
+
+  test "index shows task details and empty state" do
+    get tasks_url
+    assert_select "#tasks li", Task.count
+    assert_select "#tasks .badge-done", text: "Done"
+
+    Task.delete_all
+    get tasks_url
+    assert_select "#tasks", false
+    assert_select ".empty-state"
+  end
+
+  test "flash is shown after create" do
+    post tasks_url, params: { task: { title: "Flash me" } }
+    follow_redirect!
+    assert_select ".flash-notice", "Task was successfully created."
+  end
+
+  test "flash is shown after update" do
+    patch task_url(@task), params: { task: { title: "Renamed" } }
+    follow_redirect!
+    assert_select ".flash-notice", "Task was successfully updated."
+  end
+
+  test "flash is shown after destroy" do
+    delete task_url(@task)
+    follow_redirect!
+    assert_select ".flash-notice", "Task was successfully deleted."
+  end
+
+  test "create shows validation errors in the form" do
+    post tasks_url, params: { task: { title: "" } }
+    assert_response :unprocessable_content
+    assert_select "#error_explanation li", "Title can't be blank"
+    assert_select ".field_with_errors input#task_title"
+  end
+
+  test "update shows validation errors in the form" do
+    patch task_url(@task), params: { task: { title: "" } }
+    assert_response :unprocessable_content
+    assert_select "#error_explanation li", "Title can't be blank"
+  end
 end

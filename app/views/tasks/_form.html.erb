@@ -1,6 +1,6 @@
 <%= form_with model: task do |form| %>
   <% if task.errors.any? %>
-    <div id="error_explanation">
+    <div id="error_explanation" class="error-summary" role="alert">
       <h2><%= pluralize(task.errors.count, "error") %> prevented this task from being saved:</h2>
       <ul>
         <% task.errors.full_messages.each do |message| %>
@@ -10,27 +10,28 @@
     </div>
   <% end %>
 
-  <div>
+  <div class="form-field">
     <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title, autofocus: task.new_record? %>
   </div>
 
-  <div>
+  <div class="form-field">
     <%= form.label :description %>
     <%= form.text_area :description %>
   </div>
 
-  <div>
+  <div class="form-field">
     <%= form.label :due_date %>
     <%= form.date_field :due_date %>
   </div>
 
-  <div>
+  <div class="form-field form-field-inline">
     <%= form.check_box :completed %>
     <%= form.label :completed %>
   </div>
 
-  <div>
+  <div class="form-actions">
     <%= form.submit %>
+    <%= link_to "Cancel", tasks_path %>
   </div>
 <% end %>
