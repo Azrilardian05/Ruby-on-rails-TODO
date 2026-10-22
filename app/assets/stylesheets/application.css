@@ -115,6 +115,26 @@ input[type="submit"]:hover { background: var(--primary-hover); text-decoration: 
 .task-title { font-weight: 600; color: var(--text); }
 .task.is-completed .task-title { text-decoration: line-through; color: var(--muted); }
 .task-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; font-size: 0.85rem; color: var(--muted); }
+.task-main { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.task-toggle-form { margin: 0; }
+.task-toggle {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.task-toggle:hover { border-color: var(--success); background: var(--success-bg); }
+.task.is-completed { background: #f9faf9; opacity: 0.85; }
+.task.is-completed .task-toggle { background: var(--success); border-color: var(--success); }
+.task.is-completed .task-toggle:hover { background: #237032; }
 .task-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
 .task-actions form { margin: 0; }
 

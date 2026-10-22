@@ -11,7 +11,14 @@
   <ul id="tasks" class="task-list">
     <% @tasks.each do |task| %>
       <li id="<%= dom_id(task) %>" class="task <%= "is-completed" if task.completed? %>">
-        <div>
+        <div class="task-main">
+          <%= button_to toggle_task_path(task), method: :patch, class: "task-toggle",
+                form_class: "task-toggle-form",
+                title: (task.completed? ? "Mark as pending" : "Mark as done"),
+                aria: { label: (task.completed? ? "Mark \"#{task.title}\" as pending" : "Mark \"#{task.title}\" as done"), pressed: task.completed? } do %>
+            <%= task.completed? ? "✓" : "" %>
+          <% end %>
+          <div>
           <%= link_to task.title, task, class: "task-title" %>
           <div class="task-meta">
             <% if task.completed? %>
@@ -22,6 +29,7 @@
             <% if task.due_date %>
               <span>Due <%= l(task.due_date) %></span>
             <% end %>
+          </div>
           </div>
         </div>
 

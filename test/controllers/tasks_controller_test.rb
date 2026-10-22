@@ -146,4 +146,68 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_select "#error_explanation li", "Title can't be blank"
   end
+
+  test "toggle route is registered" do
+    assert_routing({ method: "patch", path: "/tasks/1/toggle" }, controller: "tasks", action: "toggle", id: "1")
+  end
+
+  test "toggle marks an active task as completed" do
+    assert_not @task.completed?
+    patch toggle_task_url(@task)
+
+    assert_redirected_to tasks_url
+    assert @task.reload.completed?
+  end
+
+  test "toggle reverts a completed task to active" do
+    done = tasks(:two)
+    assert done.completed?
+    patch toggle_task_url(done)
+
+    assert_redirected_to tasks_url
+    assert_not done.reload.completed?
+  end
+
+  test "toggle twice restores the original state" do
+    patch toggle_task_url(@task)
+    patch toggle_task_url(@task)
+    assert_not @task.reload.completed?
+  end
+
+  test "toggle does not change other attributes" do
+    assert_no_changes -> { @task.reload.slice(:title, :description, :due_date) } do
+      patch toggle_task_url(@task)
+    end
+  end
+
+  test "toggle redirects back to the referring page" do
+    patch toggle_task_url(@task), headers: { "HTTP_REFERER" => task_url(@task) }
+    assert_redirected_to task_url(@task)
+  end
+
+  test "toggle shows a flash message" do
+    patch toggle_task_url(@task)
+    follow_redirect!
+    assert_select ".flash-notice", "Task marked as done."
+  end
+
+  test "toggle for a missing task returns not found" do
+    patch toggle_task_url(id: 0)
+    assert_response :not_found
+  end
+
+  test "index renders a toggle button per task" do
+    get tasks_url
+    assert_select "#tasks li", Task.count
+    assert_select "##{ActionView::RecordIdentifier.dom_id(@task)} form[action='#{toggle_task_path(@task)}']"
+    assert_select "##{ActionView::RecordIdentifier.dom_id(@task)} button[aria-pressed='false']"
+  end
+
+  test "index renders completed tasks differently" do
+    done = tasks(:two)
+    get tasks_url
+    assert_select "##{ActionView::RecordIdentifier.dom_id(done)}.is-completed .badge-done"
+    assert_select "##{ActionView::RecordIdentifier.dom_id(done)} button[aria-pressed='true']"
+    assert_select "##{ActionView::RecordIdentifier.dom_id(@task)}.is-completed", false
+  end
 end
