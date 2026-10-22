@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[show edit update destroy]
+  before_action :set_task, only: %i[show edit update destroy toggle]
 
   def index
     @tasks = Task.order(created_at: :desc, id: :desc)
@@ -36,6 +36,12 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy!
     redirect_to tasks_path, notice: "Task was successfully deleted.", status: :see_other
+  end
+
+  def toggle
+    @task.toggle_completed!
+    redirect_back_or_to tasks_path, status: :see_other,
+      notice: @task.completed? ? "Task marked as done." : "Task marked as pending."
   end
 
   private
