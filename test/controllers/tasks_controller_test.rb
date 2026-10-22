@@ -1,0 +1,107 @@
+require "test_helper"
+
+class TasksControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    @task = tasks(:one)
+  end
+
+  test "routes are registered" do
+    assert_routing "/tasks", controller: "tasks", action: "index"
+    assert_routing({ method: "post", path: "/tasks" }, controller: "tasks", action: "create")
+    assert_routing "/tasks/new", controller: "tasks", action: "new"
+    assert_routing "/tasks/1", controller: "tasks", action: "show", id: "1"
+    assert_routing "/tasks/1/edit", controller: "tasks", action: "edit", id: "1"
+    assert_routing({ method: "patch", path: "/tasks/1" }, controller: "tasks", action: "update", id: "1")
+    assert_routing({ method: "delete", path: "/tasks/1" }, controller: "tasks", action: "destroy", id: "1")
+  end
+
+  test "should get index" do
+    get tasks_url
+    assert_response :success
+    assert_select "li", minimum: Task.count
+    assert_select "a", text: @task.title
+  end
+
+  test "should get new" do
+    get new_task_url
+    assert_response :success
+    assert_select "form"
+  end
+
+  test "should create task" do
+    assert_difference("Task.count", 1) do
+      post tasks_url, params: { task: { title: "New task", description: "Desc", completed: "1", due_date: "2026-12-01" } }
+    end
+
+    task = Task.order(:id).last
+    assert_redirected_to task_url(task)
+    assert_equal "New task", task.title
+    assert task.completed?
+    assert_equal Date.new(2026, 12, 1), task.due_date
+  end
+
+  test "should not create invalid task" do
+    assert_no_difference("Task.count") do
+      post tasks_url, params: { task: { title: "" } }
+    end
+
+    assert_response :unprocessable_content
+  end
+
+  test "create requires task params" do
+    assert_no_difference("Task.count") do
+      post tasks_url, params: {}
+    end
+
+    assert_response :bad_request
+  end
+
+  test "create ignores unpermitted params" do
+    post tasks_url, params: { task: { title: "Mass assign", id: 999_999, created_at: "2000-01-01" } }
+
+    task = Task.find_by!(title: "Mass assign")
+    assert_not_equal 999_999, task.id
+    assert_operator task.created_at.year, :>, 2000
+  end
+
+  test "should show task" do
+    get task_url(@task)
+    assert_response :success
+    assert_select "h1", @task.title
+  end
+
+  test "should get edit" do
+    get edit_task_url(@task)
+    assert_response :success
+    assert_select "form"
+  end
+
+  test "should update task" do
+    patch task_url(@task), params: { task: { title: "Updated", completed: "1" } }
+
+    assert_redirected_to task_url(@task)
+    @task.reload
+    assert_equal "Updated", @task.title
+    assert @task.completed?
+  end
+
+  test "should not update with invalid data" do
+    patch task_url(@task), params: { task: { title: "" } }
+
+    assert_response :unprocessable_content
+    assert_equal "Write documentation", @task.reload.title
+  end
+
+  test "should destroy task" do
+    assert_difference("Task.count", -1) do
+      delete task_url(@task)
+    end
+
+    assert_redirected_to tasks_url
+  end
+
+  test "missing task returns not found" do
+    get task_url(id: 0)
+    assert_response :not_found
+  end
+end

@@ -1,0 +1,11 @@
+<h1><%= @task.title %></h1>
+
+<p><strong>Description:</strong> <%= @task.description %></p>
+<p><strong>Due date:</strong> <%= @task.due_date && l(@task.due_date) %></p>
+<p><strong>Completed:</strong> <%= @task.completed? ? "Yes" : "No" %></p>
+
+<p>
+  <%= link_to "Edit", edit_task_path(@task) %> |
+  <%= link_to "Back to tasks", tasks_path %>
+</p>
+<%= button_to "Delete", @task, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
