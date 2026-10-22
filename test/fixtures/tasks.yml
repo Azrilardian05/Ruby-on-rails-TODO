@@ -1,0 +1,10 @@
+one:
+  title: Write documentation
+  description: Document the public API
+  completed: false
+  due_date: 2026-11-01
+
+two:
+  title: Ship release
+  description: Tag and publish the release
+  completed: true
